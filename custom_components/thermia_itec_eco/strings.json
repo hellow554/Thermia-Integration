@@ -1,0 +1,314 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Thermia iTec Eco",
+        "description": "Select the serial port of the USB-RS485 adapter. Setup sends no telegrams. Stop any running add-on that uses the same port first.",
+        "data": {
+          "port": "Serial port",
+          "room_sensor_entity": "Room temperature sensor (optional)"
+        }
+      }
+    },
+    "error": {
+      "cannot_open": "The port cannot be opened. Is it in use or is the adapter not connected?"
+    },
+    "abort": {
+      "no_ports": "No serial port found.",
+      "already_configured": "This port is already configured."
+    },
+    "options": {
+      "step": {
+        "init": {
+          "title": "Thermia iTec Eco",
+          "data": {
+            "room_sensor_entity": "Room temperature sensor (forwarded to the heat pump)",
+            "watchdog_minutes": "Watchdog: stop answering after this many minutes without a new value (0 = off)"
+          }
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "accessory_context_raw": {
+        "name": "Accessory context raw AFDC"
+      },
+      "accessory_outdoor_temperature": {
+        "name": "Accessory propagated outdoor temperature"
+      },
+      "ack_emulation_status": {
+        "name": "0x0F ACK emulation status"
+      },
+      "ack_frames_sent": {
+        "name": "ACK frames sent"
+      },
+      "average_outdoor_temperature": {
+        "name": "Average outdoor temperature"
+      },
+      "bus_status": {
+        "name": "Bus status"
+      },
+      "commanded_target_temperature": {
+        "name": "Commanded target temperature"
+      },
+      "compressor_current": {
+        "name": "Compressor current"
+      },
+      "compressor_frequency": {
+        "name": "Compressor frequency"
+      },
+      "compressor_max_frequency_ratio": {
+        "name": "Compressor max frequency ratio"
+      },
+      "compressor_temperature": {
+        "name": "Compressor temperature"
+      },
+      "condenser_delta": {
+        "name": "Condenser delta T"
+      },
+      "condenser_in": {
+        "name": "Condenser inlet"
+      },
+      "condenser_out": {
+        "name": "Condenser outlet"
+      },
+      "condenser_pump_speed": {
+        "name": "Condenser pump speed"
+      },
+      "controller_accessory_status_a80e": {
+        "name": "Controller accessory status A80E"
+      },
+      "controller_context": {
+        "name": "Controller context"
+      },
+      "controller_output_bits_a80c": {
+        "name": "Controller output bits A80C"
+      },
+      "cooling_active_above": {
+        "name": "Cooling active above"
+      },
+      "cooling_desired_temperature": {
+        "name": "Cooling desired temperature"
+      },
+      "cooling_room_hysteresis_high": {
+        "name": "Cooling room hysteresis high"
+      },
+      "cooling_room_hysteresis_low": {
+        "name": "Cooling room hysteresis low"
+      },
+      "cooling_time": {
+        "name": "Cooling time"
+      },
+      "curve_minus5": {
+        "name": "Heating curve correction -5"
+      },
+      "curve_plus5": {
+        "name": "Heating curve correction +5"
+      },
+      "curve_zero": {
+        "name": "Heating curve correction 0"
+      },
+      "dhw_mode": {
+        "name": "Hot water mode"
+      },
+      "dhw_temperature": {
+        "name": "DHW temperature"
+      },
+      "dhw_upper_temperature": {
+        "name": "DHW upper temperature"
+      },
+      "discharge_gas_temperature": {
+        "name": "Discharge gas temperature"
+      },
+      "expansion_valve_steps": {
+        "name": "Expansion valve steps"
+      },
+      "fan_speed": {
+        "name": "Outdoor fan speed"
+      },
+      "frames_ok": {
+        "name": "Valid frames"
+      },
+      "heating_curve": {
+        "name": "Heating curve"
+      },
+      "heating_max": {
+        "name": "Heating maximum"
+      },
+      "heating_min": {
+        "name": "Heating minimum"
+      },
+      "heating_stop": {
+        "name": "Heating stop"
+      },
+      "heating_time": {
+        "name": "Heating time"
+      },
+      "high_pressure": {
+        "name": "High pressure"
+      },
+      "mode_request": {
+        "name": "Mode request"
+      },
+      "mode_request_raw": {
+        "name": "Mode request raw"
+      },
+      "operating_mode": {
+        "name": "Operating mode"
+      },
+      "operation_mode_setting": {
+        "name": "Operation mode setting"
+      },
+      "outdoor_target_temperature": {
+        "name": "Outdoor unit target temperature"
+      },
+      "outdoor_temperature": {
+        "name": "Outdoor temperature"
+      },
+      "outdoor_unit_state": {
+        "name": "Outdoor unit state"
+      },
+      "outdoor_unit_state_bits": {
+        "name": "Outdoor unit state bits"
+      },
+      "outdoor_unit_status_flags": {
+        "name": "Outdoor unit status flags"
+      },
+      "reduced_temperature": {
+        "name": "Reduced temperature"
+      },
+      "refrigerant_temperature_1": {
+        "name": "Refrigerant temperature 1"
+      },
+      "refrigerant_temperature_2": {
+        "name": "Refrigerant temperature 2"
+      },
+      "resync_bytes": {
+        "name": "Discarded bytes"
+      },
+      "room_bus_outdoor_temperature": {
+        "name": "Outdoor temperature (room bus)"
+      },
+      "room_emulation_status": {
+        "name": "Room emulation status"
+      },
+      "room_factor": {
+        "name": "Room factor"
+      },
+      "room_responses_sent": {
+        "name": "Room responses sent"
+      },
+      "room_setpoint": {
+        "name": "Room setpoint"
+      },
+      "room_setpoint_mirror": {
+        "name": "Room setpoint (settings page)"
+      },
+      "room_temperature": {
+        "name": "Room temperature"
+      },
+      "sg_mode": {
+        "name": "SG mode"
+      },
+      "startup_ht": {
+        "name": "Startup HT"
+      },
+      "supply_temperature": {
+        "name": "Supply temperature"
+      },
+      "unmatched_responses": {
+        "name": "Unmatched responses"
+      }
+    },
+    "binary_sensor": {
+      "compressor_running": {
+        "name": "Compressor running"
+      },
+      "compressor_starting": {
+        "name": "Compressor starting"
+      },
+      "condenser_pump_running": {
+        "name": "Condenser pump running"
+      },
+      "controller_flag_a80c_0x10": {
+        "name": "Controller flag A80C 0x10"
+      },
+      "controller_flag_a80c_0x20": {
+        "name": "Controller flag A80C 0x20"
+      },
+      "controller_flag_a80e_0x08": {
+        "name": "Controller flag A80E 0x08"
+      },
+      "controller_flag_a80e_0x20": {
+        "name": "Controller flag A80E 0x20"
+      },
+      "cooling_active": {
+        "name": "Cooling active"
+      },
+      "cooling_context": {
+        "name": "Cooling context"
+      },
+      "cooling_enabled": {
+        "name": "Cooling enabled"
+      },
+      "cooling_room_sensor": {
+        "name": "Cooling room sensor"
+      },
+      "dhw_active": {
+        "name": "Hot water active"
+      },
+      "dhw_context": {
+        "name": "Hot water context"
+      },
+      "dhw_enabled": {
+        "name": "Hot water enabled"
+      },
+      "dhw_topup_active": {
+        "name": "Hot water top-up active"
+      },
+      "heating_active": {
+        "name": "Heating active"
+      },
+      "heating_context": {
+        "name": "Heating context"
+      },
+      "high_power": {
+        "name": "High power"
+      },
+      "outdoor_fan_running": {
+        "name": "Outdoor fan running"
+      },
+      "outdoor_unit_cycle_request": {
+        "name": "Outdoor unit cycle request"
+      },
+      "outdoor_unit_run_enable_command": {
+        "name": "Outdoor unit run enable command"
+      },
+      "room_control_flag_b3c6": {
+        "name": "Room sensor control flag B3C6"
+      },
+      "run_enable_acknowledged": {
+        "name": "Run enable acknowledged"
+      }
+    },
+    "climate": {
+      "room_thermostat": {
+        "name": "Room thermostat"
+      }
+    },
+    "button": {
+      "dhw_topup": {
+        "name": "Hot water top-up"
+      }
+    },
+    "switch": {
+      "ack_emulation_0f": {
+        "name": "0x0F ACK emulation"
+      },
+      "room_emulation": {
+        "name": "Room sensor emulation"
+      }
+    }
+  }
+}

@@ -1,0 +1,314 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Thermia iTec Eco",
+        "description": "Wähle den seriellen Port des USB-RS485-Adapters. Die Einrichtung sendet keine Telegramme. Ein eventuell laufendes Add-on, das denselben Port nutzt, muss vorher gestoppt sein.",
+        "data": {
+          "port": "Serieller Port",
+          "room_sensor_entity": "Raumtemperatursensor (optional)"
+        }
+      }
+    },
+    "error": {
+      "cannot_open": "Der Port kann nicht geöffnet werden. Ist er belegt oder der Adapter nicht angeschlossen?"
+    },
+    "abort": {
+      "no_ports": "Kein serieller Port gefunden.",
+      "already_configured": "Dieser Port ist bereits eingerichtet."
+    },
+    "options": {
+      "step": {
+        "init": {
+          "title": "Thermia iTec Eco",
+          "data": {
+            "room_sensor_entity": "Raumtemperatursensor (wird an die Wärmepumpe weitergegeben)",
+            "watchdog_minutes": "Watchdog: nach so vielen Minuten ohne neuen Wert nicht mehr antworten (0 = aus)"
+          }
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "accessory_context_raw": {
+        "name": "Zubehör Kontext Rohwert AFDC"
+      },
+      "accessory_outdoor_temperature": {
+        "name": "Außentemperatur (Zubehör-Schnittstelle)"
+      },
+      "ack_emulation_status": {
+        "name": "0x0F ACK-Emulation Status"
+      },
+      "ack_frames_sent": {
+        "name": "ACK-Telegramme gesendet"
+      },
+      "average_outdoor_temperature": {
+        "name": "Mittlere Außentemperatur"
+      },
+      "bus_status": {
+        "name": "Bus-Status"
+      },
+      "commanded_target_temperature": {
+        "name": "Vorgegebene Zieltemperatur"
+      },
+      "compressor_current": {
+        "name": "Verdichterstrom"
+      },
+      "compressor_frequency": {
+        "name": "Verdichterfrequenz"
+      },
+      "compressor_max_frequency_ratio": {
+        "name": "Verdichter max. Frequenzanteil"
+      },
+      "compressor_temperature": {
+        "name": "Verdichtertemperatur"
+      },
+      "condenser_delta": {
+        "name": "Kondensator Spreizung"
+      },
+      "condenser_in": {
+        "name": "Kondensator Eintritt"
+      },
+      "condenser_out": {
+        "name": "Kondensator Austritt"
+      },
+      "condenser_pump_speed": {
+        "name": "Kondensatorpumpe Drehzahl"
+      },
+      "controller_accessory_status_a80e": {
+        "name": "Reglerzubehör A80E"
+      },
+      "controller_context": {
+        "name": "Reglerkontext"
+      },
+      "controller_output_bits_a80c": {
+        "name": "Reglerausgänge A80C"
+      },
+      "cooling_active_above": {
+        "name": "Kühlung aktiv ab"
+      },
+      "cooling_desired_temperature": {
+        "name": "Kühl-Solltemperatur"
+      },
+      "cooling_room_hysteresis_high": {
+        "name": "Kühlung Raumhysterese hoch"
+      },
+      "cooling_room_hysteresis_low": {
+        "name": "Kühlung Raumhysterese niedrig"
+      },
+      "cooling_time": {
+        "name": "Kühlzeit"
+      },
+      "curve_minus5": {
+        "name": "Heizkurvenkorrektur -5"
+      },
+      "curve_plus5": {
+        "name": "Heizkurvenkorrektur +5"
+      },
+      "curve_zero": {
+        "name": "Heizkurvenkorrektur 0"
+      },
+      "dhw_mode": {
+        "name": "Warmwasser-Modus"
+      },
+      "dhw_temperature": {
+        "name": "Warmwassertemperatur"
+      },
+      "dhw_upper_temperature": {
+        "name": "Warmwassertemperatur oben"
+      },
+      "discharge_gas_temperature": {
+        "name": "Heißgastemperatur"
+      },
+      "expansion_valve_steps": {
+        "name": "Expansionsventil Schritte"
+      },
+      "fan_speed": {
+        "name": "Ventilatordrehzahl"
+      },
+      "frames_ok": {
+        "name": "Gültige Telegramme"
+      },
+      "heating_curve": {
+        "name": "Heizkurve"
+      },
+      "heating_max": {
+        "name": "Heizen Maximum"
+      },
+      "heating_min": {
+        "name": "Heizen Minimum"
+      },
+      "heating_stop": {
+        "name": "Heizgrenze"
+      },
+      "heating_time": {
+        "name": "Heizzeit"
+      },
+      "high_pressure": {
+        "name": "Hochdruck"
+      },
+      "mode_request": {
+        "name": "Betriebsanforderung"
+      },
+      "mode_request_raw": {
+        "name": "Betriebsanforderung Rohwert"
+      },
+      "operating_mode": {
+        "name": "Betriebsmodus"
+      },
+      "operation_mode_setting": {
+        "name": "Betriebsart (Einstellung)"
+      },
+      "outdoor_target_temperature": {
+        "name": "Zielwert Außeneinheit"
+      },
+      "outdoor_temperature": {
+        "name": "Außentemperatur"
+      },
+      "outdoor_unit_state": {
+        "name": "Außeneinheit Zustand"
+      },
+      "outdoor_unit_state_bits": {
+        "name": "Außeneinheit Zustandsbits"
+      },
+      "outdoor_unit_status_flags": {
+        "name": "Außeneinheit Statusflags"
+      },
+      "reduced_temperature": {
+        "name": "Absenktemperatur"
+      },
+      "refrigerant_temperature_1": {
+        "name": "Kältemittel Temperatur 1"
+      },
+      "refrigerant_temperature_2": {
+        "name": "Kältemittel Temperatur 2"
+      },
+      "resync_bytes": {
+        "name": "Verworfene Bytes"
+      },
+      "room_bus_outdoor_temperature": {
+        "name": "Außentemperatur (Raumbus)"
+      },
+      "room_emulation_status": {
+        "name": "Raumsensor-Emulation Status"
+      },
+      "room_factor": {
+        "name": "Raumeinfluss"
+      },
+      "room_responses_sent": {
+        "name": "Raum-Antworten gesendet"
+      },
+      "room_setpoint": {
+        "name": "Raum-Sollwert"
+      },
+      "room_setpoint_mirror": {
+        "name": "Raum-Sollwert (Einstellungsseite)"
+      },
+      "room_temperature": {
+        "name": "Raumtemperatur"
+      },
+      "sg_mode": {
+        "name": "SG-Modus"
+      },
+      "startup_ht": {
+        "name": "Startzeit HT"
+      },
+      "supply_temperature": {
+        "name": "Vorlauftemperatur"
+      },
+      "unmatched_responses": {
+        "name": "Ungepaarte Antworten"
+      }
+    },
+    "binary_sensor": {
+      "compressor_running": {
+        "name": "Verdichter läuft"
+      },
+      "compressor_starting": {
+        "name": "Verdichter startet"
+      },
+      "condenser_pump_running": {
+        "name": "Kondensatorpumpe läuft"
+      },
+      "controller_flag_a80c_0x10": {
+        "name": "Reglerflag A80C 0x10"
+      },
+      "controller_flag_a80c_0x20": {
+        "name": "Reglerflag A80C 0x20"
+      },
+      "controller_flag_a80e_0x08": {
+        "name": "Reglerflag A80E 0x08"
+      },
+      "controller_flag_a80e_0x20": {
+        "name": "Reglerflag A80E 0x20"
+      },
+      "cooling_active": {
+        "name": "Kühlen aktiv"
+      },
+      "cooling_context": {
+        "name": "Kühlkontext"
+      },
+      "cooling_enabled": {
+        "name": "Kühlung aktiv (Einstellung)"
+      },
+      "cooling_room_sensor": {
+        "name": "Kühlung Raumsensor"
+      },
+      "dhw_active": {
+        "name": "Warmwasser aktiv"
+      },
+      "dhw_context": {
+        "name": "Warmwasserkontext"
+      },
+      "dhw_enabled": {
+        "name": "Warmwasser aktiv (Einstellung)"
+      },
+      "dhw_topup_active": {
+        "name": "Warmwasser-Nachheizung aktiv"
+      },
+      "heating_active": {
+        "name": "Heizen aktiv"
+      },
+      "heating_context": {
+        "name": "Heizkontext"
+      },
+      "high_power": {
+        "name": "Hochleistung"
+      },
+      "outdoor_fan_running": {
+        "name": "Außenventilator läuft"
+      },
+      "outdoor_unit_cycle_request": {
+        "name": "Außeneinheit Zyklusanforderung"
+      },
+      "outdoor_unit_run_enable_command": {
+        "name": "Außeneinheit Freigabebefehl"
+      },
+      "room_control_flag_b3c6": {
+        "name": "Raumsensor-Steuerflag B3C6"
+      },
+      "run_enable_acknowledged": {
+        "name": "Freigabe bestätigt"
+      }
+    },
+    "climate": {
+      "room_thermostat": {
+        "name": "Raumthermostat"
+      }
+    },
+    "button": {
+      "dhw_topup": {
+        "name": "Warmwasser-Nachheizung starten"
+      }
+    },
+    "switch": {
+      "ack_emulation_0f": {
+        "name": "0x0F ACK-Emulation"
+      },
+      "room_emulation": {
+        "name": "Raumsensor-Emulation"
+      }
+    }
+  }
+}

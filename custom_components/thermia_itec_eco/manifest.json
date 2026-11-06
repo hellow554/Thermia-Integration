@@ -1,0 +1,16 @@
+{
+  "domain": "thermia_itec_eco",
+  "name": "Thermia iTec Eco",
+  "codeowners": [
+    "Marcel Hellwig"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/hellow554/Thermia-Integration",
+  "integration_type": "device",
+  "iot_class": "local_push",
+  "requirements": [
+    "pyserial==3.5"
+  ],
+  "version": "0.2.0",
+  "issue_tracker": "https://github.com/hellow554/Thermia-Integration/issues"
+}

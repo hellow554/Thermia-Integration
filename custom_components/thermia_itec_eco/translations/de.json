@@ -305,9 +305,6 @@
     "switch": {
       "ack_emulation_0f": {
         "name": "0x0F ACK-Emulation"
-      },
-      "room_emulation": {
-        "name": "Raumsensor-Emulation"
       }
     }
   }

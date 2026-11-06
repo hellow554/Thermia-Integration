@@ -9,7 +9,6 @@ import serial
 
 from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
 from homeassistant.core import Event, HomeAssistant, State, callback
-from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_call_later, async_track_state_change_event
 
@@ -52,12 +51,13 @@ class ThermiaRuntime:
         self.status = STATUS_STARTING
         self.parser = FrameParser()
         self.decoder = PassiveDecoder()
+        self.room_source: str | None = options.get(CONF_ROOM_SENSOR) or None
         self.room = RoomSensorEmulator(
-            watchdog_seconds=float(options.get(CONF_WATCHDOG_MINUTES, DEFAULT_WATCHDOG_MINUTES)) * 60
+            watchdog_seconds=float(options.get(CONF_WATCHDOG_MINUTES, DEFAULT_WATCHDOG_MINUTES)) * 60,
+            enabled=self.room_source is not None,
         )
         # Repo: the 0x0F ACK switch starts ON (RESTORE_DEFAULT_ON). It only sends once transmit is released.
         self.ack = AckEmulator(enabled=True)
-        self.room_source: str | None = options.get(CONF_ROOM_SENSOR) or None
         self._transport = SerialTransport(
             hass.loop,
             port,
@@ -91,12 +91,6 @@ class ThermiaRuntime:
         self.notify()
 
     # --------------------------------------------------------------- commands
-
-    async def async_set_room_emulation(self, on: bool) -> None:
-        if on and self.room.peer_detected:
-            raise HomeAssistantError("Ein externer Raumsensor antwortet bereits auf dem Bus.")
-        self.room.enabled = on
-        self.notify()
 
     async def async_set_ack_emulation(self, on: bool) -> None:
         if on and self.ack.peer_detected:

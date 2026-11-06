@@ -1,9 +1,9 @@
 """Shared base class for Thermia entities: dispatcher updates and device grouping.
 
-Three devices, all under the heat pump integration:
+Devices, all under the heat pump integration:
 - heat_pump: the iTec Eco itself (sensors, binary sensors, bus diagnostics)
 - dcm:       Online/DCM module (0x0F ACK switch and its status)
-- room:      room thermostat (climate, room sensor switch, hot-water button, status)
+- room:      room thermostat (climate, hot-water button, status)
 """
 from __future__ import annotations
 
@@ -52,6 +52,8 @@ class ThermiaBaseEntity(Entity):
         self._attr_unique_id = f"{entry.entry_id}_{key}"
         self._attr_translation_key = key
         self._attr_device_info = device_info(entry, device)
+        if device == "room":
+            self._attr_available = runtime.room_source is not None
         self._attr_entity_registry_enabled_default = enabled_default
         if diagnostic:
             self._attr_entity_category = EntityCategory.DIAGNOSTIC

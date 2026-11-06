@@ -478,7 +478,6 @@ PLATFORM_ENTITY_NAMES: dict[str, dict[str, tuple[str, str]]] = {
         "dhw_topup": ("Hot water top-up", "Warmwasser-Nachheizung starten"),
     },
     "switch": {
-        "room_emulation": ("Room sensor emulation", "Raumsensor-Emulation"),
         "ack_emulation_0f": ("0x0F ACK emulation", "0x0F ACK-Emulation"),
     },
 }

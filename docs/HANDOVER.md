@@ -51,7 +51,8 @@ Die HA-Module werden nur auf Syntax geprüft (`py_compile`). **Sie wurden noch n
 ## Emulationen (Repo-Verhalten)
 
 - **Raumsensor (0x0A):** Antwort auf den FC17-Poll (Lesen B3B0×3, Schreiben B3C4×3), 3,8 ms Wartezeit.
-  Schalter AUS nach Neustart. Watchdog nur durch neue Werte des Quellsensors, Standard 30 min.
+  Automatisch aktiv, wenn ein Quellsensor konfiguriert ist. Ohne Quellsensor sind die Entitäten des Raumregler-Geräts nicht verfügbar.
+  Watchdog nur durch neue Werte des Quellsensors, Standard 30 min.
   Sollwert-Anforderung wird nach 5 Abfragen verworfen. Warmwasser-Auslöser einmalig.
 - **0x0F ACK:** 8-Byte-FC10-Quittung 5 ms nach Empfang. FC03 0x0708 ×6 mit fester 17-Byte-Antwort, 5 ms.
   Schalter AN (wie im Repo, `RESTORE_DEFAULT_ON`).

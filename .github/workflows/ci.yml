@@ -2,17 +2,30 @@ name: CI
 on:
   push:
   pull_request:
+
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  core:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Regenerate artefacts and check they are committed
+        run: |
+          python3 tools/gen.py
+          git diff --exit-code -- components/thermia_bus/registers_gen.h docs/REGISTERS.md config/entities/thermia_entities.yaml
+      - name: Host unit tests (C++17, -Werror)
+        run: bash tests/run_tests.sh
+
+  esphome:
+    runs-on: ubuntu-24.04
+    needs: core
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Unit tests (standard library only)
-        run: python -m unittest discover -s tests -v
-      - name: Translations are up to date
-        run: |
-          python tools/build_translations.py
-          git diff --exit-code -- custom_components/thermia_itec_eco/strings.json custom_components/thermia_itec_eco/translations
+      - name: Install ESPHome 2026.10.1
+        run: pip install "esphome==2026.10.1"
+      - name: Use the example secrets for compile-only CI
+        run: cp config/secrets.yaml.example config/secrets.yaml
+      - name: Compile firmware
+        run: esphome compile config/thermia-relay.yaml

@@ -1,0 +1,6 @@
+# Raumthermostat: Zielwert 10..30 °C, Raumtemperatur aus der Quelle oben.
+climate:
+  - platform: thermia_bus
+    thermia_bus_id: thermia
+    id: room_thermostat
+    name: "Raumthermostat"

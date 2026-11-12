@@ -1,40 +1,50 @@
-# Thermia iTec Eco für Home Assistant
+# Thermia iTec Eco für ESPHome (Waveshare ESP32-S3-Relay-1CH)
 
-Lokale Integration für die Thermia iTec Eco Wärmepumpe über den internen RS485-Bus, ohne Cloud.
-Adressen und Abläufe stammen aus [ryckema/Thermia_itec](https://github.com/ryckema/Thermia_itec) (Dank an die Autoren und die Protokollforschung dort).
+Lokale ESPHome-Komponente, die die Thermia iTec Eco über den internen RS485-Bus ausliest und Raumsteuerung,
+Warmwasser-Nachheizung, ein 0x0F-ACK und eine Umwälzpumpe bereitstellt. Ersetzt die frühere Home-Assistant-Integration.
 
-> **Status:** Mitlesen ist erprobt. Die Emulationen (Raumsensor, 0x0F ACK) sind implementiert, aber am echten Bus noch nicht
-> abschließend geprüft. Nutzung auf eigene Verantwortung.
+> **Status:** Komponente und Tests sind geschrieben. Die ESPHome-Kompilierung läuft in der CI, der Prüfstand ist offen.
+> **Vor dem Anschluss an die Wärmepumpe `docs/SAFETY.md` lesen.**
 
-## Installation über HACS
+## Was drin ist
 
-1. HACS öffnen → drei Punkte → **Benutzerdefinierte Repositories**
-2. URL: `https://github.com/hellow554/Thermia_integration.git`, Kategorie **Integration**
-3. Thermia iTec Eco installieren, Home Assistant neu starten
-4. Einstellungen → Geräte & Dienste → Integration hinzufügen → „Thermia iTec Eco“
-5. Port des USB-RS485-Adapters wählen (bevorzugt `/dev/serial/by-id/…`), optional den Raumtemperatursensor
+- Alle Werte der Repo-Konfiguration für die Eco, aufgeteilt nach Modbus-Slave (Regler 0x02, Zubehör 0x06, Raumregler 0x0A,
+  DCM 0x0F, Außeneinheit 0x1E). Vollständige Liste in `docs/REGISTERS.md`.
+- Raumsensor-Emulation (0x0A) mit Watchdog und Sollwert-Anforderung.
+- 0x0F ACK-Emulation mit 0x0708-Antwort.
+- Raumthermostat (climate), Warmwasser-Nachheizung (button), Umwälzpumpe (switch, Relais GPIO47).
 
-Das alte Add-on, das denselben Port nutzt, muss vorher gestoppt sein.
+## Hardware
 
-## Geräte
+| Pin | Funktion |
+|---|---|
+| GPIO17 | RS485 TX |
+| GPIO18 | RS485 RX |
+| GPIO21 | RS485 Freigabe (DE/RE) |
+| GPIO47 | Relais (Umwälzpumpe) |
 
-Regler (0x02), Zubehör (0x06), Raumregler (0x0A), DCM / Online-Modul (0x0F), Außeneinheit (0x1E).
-Eine vollständige Liste aller Entitäten mit Bus-Quelle steht in [docs/REGISTERS.md](docs/REGISTERS.md).
+Verdrahtung: RJ45 Pin 1 oder 2 → A, Pin 3 oder 4 → B, Pin 5 oder 6 → GND. **Pins 7 und 8 (+12 V) nicht anschließen.**
 
-## Emulationen
+## Schnellstart
 
-- **Raumsensor-Emulation** (Standard AUS) antwortet auf die Abfragen des Reglers mit der Raumtemperatur.
-- **0x0F ACK-Emulation** (Standard AN) quittiert Schreibvorgänge an das DCM-Modul.
-- Beide sperren sich, wenn ein zweiter Teilnehmer auf dem Bus antwortet.
+    python3 tools/gen.py                      # erzeugt Register-Header, Doku und Entitäten
+    bash tests/run_tests.sh                   # C++-Host-Tests
+    cp config/secrets.yaml.example config/secrets.yaml   # ausfüllen
+    esphome compile config/thermia-relay.yaml  # ESPHome 2026.10.1
+    esphome run config/thermia-relay.yaml      # erstes Flashen per USB
 
-## Entwicklung
+Danach den Prüfstand in `docs/BENCH_TEST.md` durchgehen, bevor das Board an den Bus kommt.
 
-    python3 -m unittest discover -s tests -v
-    python3 tools/build_translations.py
-    python3 tools/build_register_docs.py
+## Dokumentation
 
-Übergabe für weitere Entwickler und KI-Agenten: [docs/HANDOVER.md](docs/HANDOVER.md), [AGENTS.md](AGENTS.md).
+- `docs/SAFETY.md`: Sicherheit, Boot-Zustand des Enable-Pins, Pumpe, Netzspannung
+- `docs/BENCH_TEST.md`: Prüfstand in Schritten mit Abbruchkriterien
+- `docs/DECISIONS.md`: alle Entscheidungen mit Quelle
+- `docs/PLAN_ESPHOME_2026_10.md`: Plan und Stand
+- `docs/REGISTERS.md`: alle Register (erzeugt)
+- `AGENTS.md`: Regeln für Mitarbeit und KI-Agenten
 
-## Lizenz
+## Lizenz und Danksagung
 
-MIT, siehe [LICENSE](LICENSE).
+MIT, siehe `LICENSE`. Register, Zeiten und Abläufe stammen aus [ryckema/Thermia_itec](https://github.com/ryckema/Thermia_itec)
+(MIT). Die Protokollforschung von Piotr Romanowski ist dort ebenfalls genannt. Details in `NOTICE.md`.

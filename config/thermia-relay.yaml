@@ -1,0 +1,141 @@
+# Thermia iTec Eco bridge on the Waveshare ESP32-S3-Relay-1CH.
+# Pins from the Waveshare schematic (ESP32-S3-Relay-1CH-schematic.pdf):
+#   RS485 TXD = GPIO17, RXD = GPIO18, RS485 enable (DE/RE) = GPIO21, relay = GPIO47.
+# Read docs/SAFETY.md before connecting this board to the heat pump bus.
+
+substitutions:
+  name: thermia-bridge
+  friendly_name: "Thermia Bridge"
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  on_boot:
+    priority: 800   # very early: make sure the pump relay is OFF before anything else runs
+    then:
+      - switch.turn_off: pump
+
+external_components:
+  - source:
+      type: local
+      path: ../components   # the Thermia protocol component lives in components/thermia_bus
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+logger:
+  level: INFO
+
+api:
+  encryption:
+    key: !secret api_key
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: "Thermia Fallback"
+    password: !secret fallback_password
+
+captive_portal:
+
+uart:
+  id: thermia_uart
+  tx_pin: GPIO17
+  rx_pin: GPIO18
+  baud_rate: 9600
+  parity: EVEN
+  data_bits: 8
+  stop_bits: 1
+  rx_buffer_size: 512
+  rx_full_threshold: 120
+  rx_timeout: 2
+
+thermia_bus:
+  id: thermia
+  uart_id: thermia_uart
+  de_pin:
+    number: GPIO21
+    mode: output
+    inverted: false
+
+switch:
+  # Umwälzpumpe: 230 V AC, max. 3 A, via the relay (10 A contacts). Always OFF after a reboot.
+  - platform: gpio
+    id: pump
+    name: "Umwälzpumpe"
+    pin:
+      number: GPIO47
+      mode: output
+    restore_mode: ALWAYS_OFF
+    icon: mdi:pump
+
+  # Room sensor emulation (0x0A): OFF after boot, as in the repo.
+  - platform: template
+    id: room_emulation
+    name: "Raumsensor-Emulation"
+    icon: mdi:thermometer-check
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - lambda: 'id(thermia).set_room_enabled(true);'
+    turn_off_action:
+      - lambda: 'id(thermia).set_room_enabled(false);'
+
+  # 0x0F Online/DCM ACK emulation: ON by default, as in the repo.
+  - platform: template
+    id: ack_emulation
+    name: "0x0F ACK-Emulation"
+    icon: mdi:check-network-outline
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: 'id(thermia).set_ack_enabled(true);'
+    turn_off_action:
+      - lambda: 'id(thermia).set_ack_enabled(false);'
+
+button:
+  - platform: template
+    name: "Warmwasser-Nachheizung starten"
+    icon: mdi:water-boiler
+    on_press:
+      - lambda: 'id(thermia).room_request_topup();'
+
+number:
+  # Watchdog for the room temperature input, in minutes. 0 = off. Restored after reboot, like the repo.
+  - platform: template
+    id: watchdog_minutes
+    name: "Watchdog Raumtemperatur (min)"
+    min_value: 0
+    max_value: 120
+    step: 5
+    initial_value: 30
+    restore_value: true
+    optimistic: true
+    set_action:
+      - lambda: 'id(thermia).set_watchdog_minutes(x);'
+
+sensor:
+  # Raumtemperatur kommt aus Home Assistant. Jeder neue Wert setzt den Watchdog zurück.
+  - platform: homeassistant
+    id: room_temperature_source
+    name: "Raumtemperatur Quelle"
+    entity_id: sensor.raumtemperatur_quelle
+    on_value:
+      - lambda: 'id(thermia).room_set_temperature(x);'
+
+packages:
+  thermia: !include entities/thermia_entities.yaml
+  climate: !include entities/climate.yaml

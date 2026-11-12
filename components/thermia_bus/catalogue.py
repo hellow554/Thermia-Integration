@@ -30,7 +30,7 @@ DEVICE_LABELS = {
     "controller": "Regler (0x02)",
     "accessory": "Zubehör (0x06)",
     "room": "Raumregler (0x0A)",
-    "dcm": "DCM / Online-Modul (0x0F)",
+    "dcm": "DCM Online-Modul (0x0F)",  # no "/": ESPHome reserves it in entity names
     "outdoor": "Außeneinheit (0x1E)",
 }
 

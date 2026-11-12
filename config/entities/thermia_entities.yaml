@@ -232,66 +232,66 @@ sensor:
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: heating_curve
-    name: "DCM / Online-Modul (0x0F) Heizkurve"
+    name: "DCM Online-Modul (0x0F) Heizkurve"
     state_class: measurement
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: heating_min
-    name: "DCM / Online-Modul (0x0F) Heizen Minimum"
+    name: "DCM Online-Modul (0x0F) Heizen Minimum"
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: heating_max
-    name: "DCM / Online-Modul (0x0F) Heizen Maximum"
+    name: "DCM Online-Modul (0x0F) Heizen Maximum"
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: curve_plus5
-    name: "DCM / Online-Modul (0x0F) Heizkurvenkorrektur +5"
+    name: "DCM Online-Modul (0x0F) Heizkurvenkorrektur +5"
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: curve_zero
-    name: "DCM / Online-Modul (0x0F) Heizkurvenkorrektur 0"
+    name: "DCM Online-Modul (0x0F) Heizkurvenkorrektur 0"
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: curve_minus5
-    name: "DCM / Online-Modul (0x0F) Heizkurvenkorrektur -5"
+    name: "DCM Online-Modul (0x0F) Heizkurvenkorrektur -5"
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: heating_stop
-    name: "DCM / Online-Modul (0x0F) Heizgrenze"
+    name: "DCM Online-Modul (0x0F) Heizgrenze"
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: reduced_temperature
-    name: "DCM / Online-Modul (0x0F) Absenktemperatur"
+    name: "DCM Online-Modul (0x0F) Absenktemperatur"
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: room_factor
-    name: "DCM / Online-Modul (0x0F) Raumeinfluss"
+    name: "DCM Online-Modul (0x0F) Raumeinfluss"
     state_class: measurement
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: room_setpoint_mirror
-    name: "DCM / Online-Modul (0x0F) Raum-Sollwert (Einstellungsseite)"
+    name: "DCM Online-Modul (0x0F) Raum-Sollwert (Einstellungsseite)"
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
@@ -300,21 +300,21 @@ sensor:
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: startup_ht
-    name: "DCM / Online-Modul (0x0F) Startzeit HT"
+    name: "DCM Online-Modul (0x0F) Startzeit HT"
     unit_of_measurement: "min"
     state_class: measurement
     disabled_by_default: true
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: heating_time
-    name: "DCM / Online-Modul (0x0F) Heizzeit"
+    name: "DCM Online-Modul (0x0F) Heizzeit"
     unit_of_measurement: "min"
     state_class: measurement
     disabled_by_default: true
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: cooling_desired_temperature
-    name: "DCM / Online-Modul (0x0F) Kühl-Solltemperatur"
+    name: "DCM Online-Modul (0x0F) Kühl-Solltemperatur"
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
@@ -322,7 +322,7 @@ sensor:
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: cooling_active_above
-    name: "DCM / Online-Modul (0x0F) Kühlung aktiv ab"
+    name: "DCM Online-Modul (0x0F) Kühlung aktiv ab"
     unit_of_measurement: "°C"
     device_class: temperature
     state_class: measurement
@@ -330,21 +330,21 @@ sensor:
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: cooling_time
-    name: "DCM / Online-Modul (0x0F) Kühlzeit"
+    name: "DCM Online-Modul (0x0F) Kühlzeit"
     unit_of_measurement: "min"
     state_class: measurement
     disabled_by_default: true
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: cooling_room_hysteresis_low
-    name: "DCM / Online-Modul (0x0F) Kühlung Raumhysterese niedrig"
+    name: "DCM Online-Modul (0x0F) Kühlung Raumhysterese niedrig"
     unit_of_measurement: "°C"
     state_class: measurement
     disabled_by_default: true
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: cooling_room_hysteresis_high
-    name: "DCM / Online-Modul (0x0F) Kühlung Raumhysterese hoch"
+    name: "DCM Online-Modul (0x0F) Kühlung Raumhysterese hoch"
     unit_of_measurement: "°C"
     state_class: measurement
     disabled_by_default: true
@@ -485,20 +485,20 @@ binary_sensor:
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: high_power
-    name: "DCM / Online-Modul (0x0F) Hochleistung"
+    name: "DCM Online-Modul (0x0F) Hochleistung"
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: dhw_enabled
-    name: "DCM / Online-Modul (0x0F) Warmwasser aktiv (Einstellung)"
+    name: "DCM Online-Modul (0x0F) Warmwasser aktiv (Einstellung)"
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: cooling_enabled
-    name: "DCM / Online-Modul (0x0F) Kühlung aktiv (Einstellung)"
+    name: "DCM Online-Modul (0x0F) Kühlung aktiv (Einstellung)"
     disabled_by_default: true
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: cooling_room_sensor
-    name: "DCM / Online-Modul (0x0F) Kühlung Raumsensor"
+    name: "DCM Online-Modul (0x0F) Kühlung Raumsensor"
     disabled_by_default: true
 
 text_sensor:
@@ -529,11 +529,11 @@ text_sensor:
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: dhw_mode
-    name: "DCM / Online-Modul (0x0F) Warmwasser-Modus"
+    name: "DCM Online-Modul (0x0F) Warmwasser-Modus"
   - platform: thermia_bus
     thermia_bus_id: thermia
     key: operation_mode_setting
-    name: "DCM / Online-Modul (0x0F) Betriebsart (Einstellung)"
+    name: "DCM Online-Modul (0x0F) Betriebsart (Einstellung)"
     disabled_by_default: true
   - platform: thermia_bus
     thermia_bus_id: thermia

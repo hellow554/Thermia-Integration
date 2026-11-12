@@ -63,26 +63,26 @@ Zusätzlich gibt es Diagnose- und Emulationswerte ohne Register: `bus_status`, `
 | Außeneinheit (0x1E) | Betriebsanforderung | `0x1E write 0004` | text | aus |
 | Außeneinheit (0x1E) | Außeneinheit Zyklusanforderung | `0x1E write 0007` | binary | aus |
 | Außeneinheit (0x1E) | Außeneinheit Freigabebefehl | `0x1E write 0008` | binary | aus |
-| DCM / Online-Modul (0x0F) | Heizkurve | `0x0F write 03E8` | sensor | an |
-| DCM / Online-Modul (0x0F) | Heizen Minimum | `0x0F write 03E9` | sensor | an |
-| DCM / Online-Modul (0x0F) | Heizen Maximum | `0x0F write 03EA` | sensor | an |
-| DCM / Online-Modul (0x0F) | Heizkurvenkorrektur +5 | `0x0F write 03EB` | sensor | an |
-| DCM / Online-Modul (0x0F) | Heizkurvenkorrektur 0 | `0x0F write 03EC` | sensor | an |
-| DCM / Online-Modul (0x0F) | Heizkurvenkorrektur -5 | `0x0F write 03ED` | sensor | an |
-| DCM / Online-Modul (0x0F) | Heizgrenze | `0x0F write 03EE` | sensor | an |
-| DCM / Online-Modul (0x0F) | Absenktemperatur | `0x0F write 03EF` | sensor | an |
-| DCM / Online-Modul (0x0F) | Raumeinfluss | `0x0F write 03F0` | sensor | an |
-| DCM / Online-Modul (0x0F) | Hochleistung | `0x0F write 03F3` | binary | an |
-| DCM / Online-Modul (0x0F) | Raum-Sollwert (Einstellungsseite) | `0x0F write 03F4` | sensor | aus |
-| DCM / Online-Modul (0x0F) | Warmwasser aktiv (Einstellung) | `0x0F write 042E` | binary | an |
-| DCM / Online-Modul (0x0F) | Warmwasser-Modus | `0x0F write 042F` | text | an |
-| DCM / Online-Modul (0x0F) | Startzeit HT | `0x0F write 0433` | sensor | aus |
-| DCM / Online-Modul (0x0F) | Heizzeit | `0x0F write 0434` | sensor | aus |
-| DCM / Online-Modul (0x0F) | Betriebsart (Einstellung) | `0x0F write 0553` | text | aus |
-| DCM / Online-Modul (0x0F) | Kühlung aktiv (Einstellung) | `0x0F write 0442` | binary | aus |
-| DCM / Online-Modul (0x0F) | Kühl-Solltemperatur | `0x0F write 0443` | sensor | aus |
-| DCM / Online-Modul (0x0F) | Kühlung aktiv ab | `0x0F write 0445` | sensor | aus |
-| DCM / Online-Modul (0x0F) | Kühlzeit | `0x0F write 0449` | sensor | aus |
-| DCM / Online-Modul (0x0F) | Kühlung Raumsensor | `0x0F write 044C` | binary | aus |
-| DCM / Online-Modul (0x0F) | Kühlung Raumhysterese niedrig | `0x0F write 044D` | sensor | aus |
-| DCM / Online-Modul (0x0F) | Kühlung Raumhysterese hoch | `0x0F write 044E` | sensor | aus |
+| DCM Online-Modul (0x0F) | Heizkurve | `0x0F write 03E8` | sensor | an |
+| DCM Online-Modul (0x0F) | Heizen Minimum | `0x0F write 03E9` | sensor | an |
+| DCM Online-Modul (0x0F) | Heizen Maximum | `0x0F write 03EA` | sensor | an |
+| DCM Online-Modul (0x0F) | Heizkurvenkorrektur +5 | `0x0F write 03EB` | sensor | an |
+| DCM Online-Modul (0x0F) | Heizkurvenkorrektur 0 | `0x0F write 03EC` | sensor | an |
+| DCM Online-Modul (0x0F) | Heizkurvenkorrektur -5 | `0x0F write 03ED` | sensor | an |
+| DCM Online-Modul (0x0F) | Heizgrenze | `0x0F write 03EE` | sensor | an |
+| DCM Online-Modul (0x0F) | Absenktemperatur | `0x0F write 03EF` | sensor | an |
+| DCM Online-Modul (0x0F) | Raumeinfluss | `0x0F write 03F0` | sensor | an |
+| DCM Online-Modul (0x0F) | Hochleistung | `0x0F write 03F3` | binary | an |
+| DCM Online-Modul (0x0F) | Raum-Sollwert (Einstellungsseite) | `0x0F write 03F4` | sensor | aus |
+| DCM Online-Modul (0x0F) | Warmwasser aktiv (Einstellung) | `0x0F write 042E` | binary | an |
+| DCM Online-Modul (0x0F) | Warmwasser-Modus | `0x0F write 042F` | text | an |
+| DCM Online-Modul (0x0F) | Startzeit HT | `0x0F write 0433` | sensor | aus |
+| DCM Online-Modul (0x0F) | Heizzeit | `0x0F write 0434` | sensor | aus |
+| DCM Online-Modul (0x0F) | Betriebsart (Einstellung) | `0x0F write 0553` | text | aus |
+| DCM Online-Modul (0x0F) | Kühlung aktiv (Einstellung) | `0x0F write 0442` | binary | aus |
+| DCM Online-Modul (0x0F) | Kühl-Solltemperatur | `0x0F write 0443` | sensor | aus |
+| DCM Online-Modul (0x0F) | Kühlung aktiv ab | `0x0F write 0445` | sensor | aus |
+| DCM Online-Modul (0x0F) | Kühlzeit | `0x0F write 0449` | sensor | aus |
+| DCM Online-Modul (0x0F) | Kühlung Raumsensor | `0x0F write 044C` | binary | aus |
+| DCM Online-Modul (0x0F) | Kühlung Raumhysterese niedrig | `0x0F write 044D` | sensor | aus |
+| DCM Online-Modul (0x0F) | Kühlung Raumhysterese hoch | `0x0F write 044E` | sensor | aus |

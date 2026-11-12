@@ -64,7 +64,7 @@ void ThermiaBus::dump_config() {
   ESP_LOGCONFIG(TAG, "Thermia iTec Eco bus");
   ESP_LOGCONFIG(TAG, "  Sensors: %u, binary: %u, text: %u", static_cast<unsigned>(sensors_.size()),
                 static_cast<unsigned>(binaries_.size()), static_cast<unsigned>(texts_.size()));
-  this->check_uart_settings(9600, 1, uart::UART_CONFIG_PARITY_EVEN, 8);
+  // UART settings (9600 8E1) are validated in the YAML schema; check_uart_settings() is deprecated.
 }
 
 void ThermiaBus::loop() {
@@ -262,7 +262,8 @@ bool ThermiaBus::cooling_active() {
 
 climate::ClimateTraits ThermiaClimate::traits() {
   auto t = climate::ClimateTraits();
-  t.set_supports_current_temperature(true);
+  // ESPHome 2026.5+ uses feature flags instead of boolean setters.
+  t.add_feature_flags(climate::CLIMATE_SUPPORTS_CURRENT_TEMPERATURE | climate::CLIMATE_SUPPORTS_ACTION);
   t.set_supported_modes({climate::CLIMATE_MODE_HEAT});
   t.set_visual_min_temperature(10.0f);
   t.set_visual_max_temperature(30.0f);

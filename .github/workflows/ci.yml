@@ -25,7 +25,10 @@ jobs:
           python-version: "3.12"
       - name: Install ESPHome 2026.10.1
         run: pip install "esphome==2026.10.1"
-      - name: Use the example secrets for compile-only CI
-        run: cp config/secrets.yaml.example config/secrets.yaml
+      - name: Create secrets with a random API key (compile only, never shipped)
+        run: |
+          KEY="$(openssl rand -base64 32)"
+          sed "s#REPLACE-ME-with-openssl-rand-base64-32#${KEY}#" config/secrets.yaml.example > config/secrets.yaml
+          grep -q 'REPLACE-ME' config/secrets.yaml && exit 1 || true
       - name: Compile firmware
         run: esphome compile config/thermia-relay.yaml

@@ -29,7 +29,7 @@ Verdrahtung: RJ45 Pin 1 oder 2 → A, Pin 3 oder 4 → B, Pin 5 oder 6 → GND. 
 
     python3 tools/gen.py                      # erzeugt Register-Header, Doku und Entitäten
     bash tests/run_tests.sh                   # C++-Host-Tests
-    cp config/secrets.yaml.example config/secrets.yaml   # ausfüllen
+    cp config/secrets.yaml.example config/secrets.yaml   # ausfüllen, api_key mit: openssl rand -base64 32
     esphome compile config/thermia-relay.yaml  # ESPHome 2026.10.1
     esphome run config/thermia-relay.yaml      # erstes Flashen per USB
 

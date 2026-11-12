@@ -6,7 +6,7 @@ Für weitere Entwickler und KI-Agenten. Vor dem Arbeiten AGENTS.md lesen.
 
 - Protokollkern in C++ mit 89 Host-Tests (`bash tests/run_tests.sh`).
 - Registerkatalog in `components/thermia_bus/catalogue.py` mit 78 Feldern und 8 Diagnosewerten.
-- Generator `tools/gen.py` für `registers_gen.h`, `docs/REGISTERS.md` und `config/entities/thermia_entities.yaml`.
+- Generator `tools/gen.py` für `registers_gen.cpp`, `docs/REGISTERS.md` und `config/entities/thermia_entities.yaml`.
 - ESPHome-Komponente, Plattformen und Gerätekonfiguration (noch nicht kompiliert).
 - Dokumentation: SAFETY, BENCH_TEST, DECISIONS, PLAN.
 

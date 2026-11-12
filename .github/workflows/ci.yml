@@ -11,7 +11,7 @@ jobs:
       - name: Regenerate artefacts and check they are committed
         run: |
           python3 tools/gen.py
-          git diff --exit-code -- components/thermia_bus/registers_gen.h docs/REGISTERS.md config/entities/thermia_entities.yaml
+          git diff --exit-code -- components/thermia_bus/registers_gen.cpp docs/REGISTERS.md config/entities/thermia_entities.yaml
       - name: Host unit tests (C++17, -Werror)
         run: bash tests/run_tests.sh
 

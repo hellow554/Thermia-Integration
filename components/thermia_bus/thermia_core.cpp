@@ -2,8 +2,6 @@
 
 #include <cmath>
 
-#include "registers_gen.h"
-
 namespace thermia_core {
 namespace {
 

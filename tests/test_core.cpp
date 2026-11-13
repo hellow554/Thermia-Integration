@@ -216,7 +216,7 @@ static void test_settings_block_and_room_exchange() {
   CHECK(e.room.bus_setpoint == 21);
 }
 
-static void test_values_are_kept_without_expiry() {
+static void test_values_are_kept_without_expiry_and_age_is_reported() {
   Engine e;
   Bytes req = fc17_req(SLAVE_ROOM, 0xB3B0, 3, 0xB3C4, {5, 21, 2});
   Bytes resp = read_resp(SLAVE_ROOM, FC_READ_WRITE, {215, 0, 0});
@@ -224,9 +224,33 @@ static void test_values_are_kept_without_expiry() {
   e.feed(resp.data(), resp.size(), 0, 0);
   Value v;
   CHECK(value_of("room_temperature", e.decoder, v));
+  uint32_t age_ms = 999;
+  CHECK(e.decoder.oldest_reading_age_ms(5000, age_ms));
+  CHECK(age_ms == 5000);
+  int32_t raw = 0;
+  CHECK(e.decoder.get(SLAVE_ROOM, Space::READ, 0xB3B0, raw, 0, 1000));
+  CHECK(!e.decoder.get(SLAVE_ROOM, Space::READ, 0xB3B0, raw, 1001, 1000));
+  const FieldSpec* room_temp = spec("room_temperature");
+  CHECK(room_temp != nullptr);
+  CHECK(evaluate(*room_temp, e.decoder, v, 0, 1000));
+  CHECK(!evaluate(*room_temp, e.decoder, v, 1001, 1000));
 }
 
 // --- Emulation -------------------------------------------------------------
+
+static void test_engine_does_not_reuse_expired_room_setpoint() {
+  Engine e;
+  e.max_register_age_ms = 500;
+  Bytes room_poll = fc17_req(SLAVE_ROOM, 0xB3B0, 3, 0xB3C4, {5, 21, 2});
+  e.feed(room_poll.data(), room_poll.size(), 0, 1000);
+  CHECK(e.room.bus_setpoint == 21);
+
+  // A later unrelated frame runs sync_bus again after the stored room values expired.
+  Bytes unrelated = fc03_req(SLAVE_CONTROLLER, 0xA7FB, 1);
+  e.feed(unrelated.data(), unrelated.size(), 1000000, 2000);
+  CHECK(e.room.bus_setpoint == -1);
+  CHECK(!e.room.topup_active);
+}
 
 static void test_room_poll_response_bytes() {
   RoomEmulator r;
@@ -253,7 +277,7 @@ static void test_setpoint_retry_and_topup_one_shot() {
     r.on_poll(1000 + i, out);
     if (out[5] == 0x00 && out[6] == 0x16) ++carried;
   }
-  CHECK(carried == 6);      // dropped after six polls, as in the repo
+  CHECK(carried == 5);      // exactly five transmissions, then stop retrying
   CHECK(out[5] == 0 && out[6] == 0);
   r.request_topup();
   r.on_poll(2000, out);
@@ -386,6 +410,17 @@ static void test_engine_ack_on_fc10_write() {
   CHECK(e.tx.frame() == append_crc(Bytes{SLAVE_DCM, FC_WRITE_MULTIPLE, 0x03, 0xE8, 0x00, 0x02}));
 }
 
+static void test_engine_counts_dropped_tx_requests() {
+  Engine e;
+  e.ack.enabled = true;
+  Bytes first = fc10_req(SLAVE_DCM, 0x03E8, {27, 20});
+  Bytes second = fc10_req(SLAVE_DCM, 0x03EA, {45, 17});
+  first.insert(first.end(), second.begin(), second.end());
+  CHECK(e.feed(first.data(), first.size(), 1000000, 1000) == 2);
+  CHECK(e.tx.busy());
+  CHECK(e.tx_dropped == 1);
+}
+
 int main() {
   test_crc();
   test_framing();
@@ -394,7 +429,8 @@ int main() {
   test_controller_block_and_sentinel();
   test_outdoor_state_and_active_flags();
   test_settings_block_and_room_exchange();
-  test_values_are_kept_without_expiry();
+  test_values_are_kept_without_expiry_and_age_is_reported();
+  test_engine_does_not_reuse_expired_room_setpoint();
   test_room_poll_response_bytes();
   test_setpoint_retry_and_topup_one_shot();
   test_setpoint_confirmed_clears_request();
@@ -407,6 +443,7 @@ int main() {
   test_engine_poll_to_transmit();
   test_engine_no_response_when_disabled();
   test_engine_ack_on_fc10_write();
+  test_engine_counts_dropped_tx_requests();
   std::printf("checks: %d, failures: %d\n", g_checks, g_failures);
   return g_failures == 0 ? 0 : 1;
 }

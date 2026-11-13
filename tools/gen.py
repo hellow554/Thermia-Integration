@@ -109,7 +109,7 @@ def check_names() -> None:
         for name in (f"{cat.DEVICE_LABELS[f.device]} {f.name_de}",):
             if "/" in name:
                 raise SystemExit(f"entity name contains '/': {name!r}")
-    for _key, _kind, name_de, _name_en, _diag in cat.DIAG_SENSORS:
+    for _key, _kind, name_de, _name_en, _diag, *_metadata in cat.DIAG_SENSORS:
         if "/" in name_de:
             raise SystemExit(f"entity name contains '/': {name_de!r}")
 
@@ -142,14 +142,16 @@ def write_entities() -> str:
         if not f.enabled_default:
             block.append("    disabled_by_default: true")
         by_platform[platform].append("\n".join(block))
-    for key, kind, name_de, _name_en, diagnostic in cat.DIAG_SENSORS:
-        platform = "text_sensor" if kind == "text" else "sensor"
+    for key, kind, name_de, _name_en, diagnostic, *metadata in cat.DIAG_SENSORS:
+        platform = {"text": "text_sensor", "sensor": "sensor", "binary": "binary_sensor"}[kind]
         block = [
             "  - platform: thermia_bus",
             "    thermia_bus_id: thermia",
             f"    key: {key}",
             f'    name: "{name_de}"',
         ]
+        if metadata and metadata[0]:
+            block.append(f'    unit_of_measurement: "{metadata[0]}"')
         if diagnostic:
             block.append("    entity_category: diagnostic")
             block.append("    disabled_by_default: true")

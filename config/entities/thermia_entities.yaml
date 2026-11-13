@@ -378,6 +378,19 @@ sensor:
     name: "ACK-Telegramme gesendet"
     entity_category: diagnostic
     disabled_by_default: true
+  - platform: thermia_bus
+    thermia_bus_id: thermia
+    key: tx_dropped
+    name: "Verworfene Sendeaufträge"
+    entity_category: diagnostic
+    disabled_by_default: true
+  - platform: thermia_bus
+    thermia_bus_id: thermia
+    key: oldest_register_age_seconds
+    name: "Alter des ältesten Registerwerts"
+    unit_of_measurement: "s"
+    entity_category: diagnostic
+    disabled_by_default: true
 
 binary_sensor:
   - platform: thermia_bus
@@ -499,6 +512,12 @@ binary_sensor:
     thermia_bus_id: thermia
     key: cooling_room_sensor
     name: "DCM Online-Modul (0x0F) Kühlung Raumsensor"
+    disabled_by_default: true
+  - platform: thermia_bus
+    thermia_bus_id: thermia
+    key: register_data_stale
+    name: "Registerdaten veraltet"
+    entity_category: diagnostic
     disabled_by_default: true
 
 text_sensor:

@@ -82,8 +82,9 @@ Candidates candidates(const Bytes& b) {
   return c;  // unknown function code: n == 0, the caller resyncs
 }
 
-bool raw_value(const PassiveDecoder& d, uint8_t slave, Space space, uint16_t addr, int32_t& raw) {
-  return d.get(slave, space, addr, raw);
+bool raw_value(const PassiveDecoder& d, uint8_t slave, Space space, uint16_t addr, int32_t& raw,
+               uint32_t now_ms, uint32_t max_age_ms) {
+  return d.get(slave, space, addr, raw, now_ms, max_age_ms);
 }
 
 bool num_in_range(float value, float lo, float hi) {
@@ -91,9 +92,9 @@ bool num_in_range(float value, float lo, float hi) {
 }
 
 bool outdoor_read(const PassiveDecoder& d, uint16_t addr, float div, bool unsigned_, float lo, float hi,
-                  float& out) {
+                  float& out, uint32_t now_ms, uint32_t max_age_ms) {
   int32_t raw;
-  if (!raw_value(d, SLAVE_OUTDOOR, Space::READ, addr, raw)) return false;
+  if (!raw_value(d, SLAVE_OUTDOOR, Space::READ, addr, raw, now_ms, max_age_ms)) return false;
   if (unsigned_) raw &= 0xFFFF;
   const float v = static_cast<float>(raw) / div;
   if (!num_in_range(v, lo, hi)) return false;
@@ -101,39 +102,41 @@ bool outdoor_read(const PassiveDecoder& d, uint16_t addr, float div, bool unsign
   return true;
 }
 
-bool flags_read(const PassiveDecoder& d, uint32_t& flags) {
+bool flags_read(const PassiveDecoder& d, uint32_t& flags, uint32_t now_ms, uint32_t max_age_ms) {
   int32_t raw;
-  if (!raw_value(d, SLAVE_OUTDOOR, Space::READ, 0x0015, raw)) return false;
+  if (!raw_value(d, SLAVE_OUTDOOR, Space::READ, 0x0015, raw, now_ms, max_age_ms)) return false;
   flags = static_cast<uint32_t>(raw) & 0xFFFF;
   return true;
 }
 
-bool truthy(const PassiveDecoder& d, uint8_t slave, Space space, uint16_t addr) {
+bool truthy(const PassiveDecoder& d, uint8_t slave, Space space, uint16_t addr, uint32_t now_ms,
+            uint32_t max_age_ms) {
   int32_t raw;
-  return raw_value(d, slave, space, addr, raw) && raw != 0;
+  return raw_value(d, slave, space, addr, raw, now_ms, max_age_ms) && raw != 0;
 }
 
-bool evaluate_derived(Derived which, const PassiveDecoder& d, Value& out) {
+bool evaluate_derived(Derived which, const PassiveDecoder& d, Value& out, uint32_t now_ms,
+                      uint32_t max_age_ms) {
   switch (which) {
     case Derived::CONDENSER_DELTA: {
       float cin, cout;
-      if (!outdoor_read(d, 0x0000, 10.0f, false, -50.0f, 150.0f, cin)) return false;
-      if (!outdoor_read(d, 0x0001, 10.0f, false, -50.0f, 150.0f, cout)) return false;
+      if (!outdoor_read(d, 0x0000, 10.0f, false, -50.0f, 150.0f, cin, now_ms, max_age_ms)) return false;
+      if (!outdoor_read(d, 0x0001, 10.0f, false, -50.0f, 150.0f, cout, now_ms, max_age_ms)) return false;
       out.type = Value::Type::NUM;
       out.num = std::round((cout - cin) * 100.0f) / 100.0f;
       return true;
     }
     case Derived::COMPRESSOR_STARTING: {
       float freq, current;
-      if (!outdoor_read(d, 0x000B, 1.0f, true, 0.0f, 200.0f, freq)) return false;
-      if (!outdoor_read(d, 0x000D, 10.0f, true, 0.0f, 100.0f, current)) return false;
+      if (!outdoor_read(d, 0x000B, 1.0f, true, 0.0f, 200.0f, freq, now_ms, max_age_ms)) return false;
+      if (!outdoor_read(d, 0x000D, 10.0f, true, 0.0f, 100.0f, current, now_ms, max_age_ms)) return false;
       out.type = Value::Type::BOOL;
       out.b = freq > 0.0f && current < 0.2f;
       return true;
     }
     case Derived::OPERATING_MODE: {
       uint32_t flags;
-      if (!flags_read(d, flags)) return false;
+      if (!flags_read(d, flags, now_ms, max_age_ms)) return false;
       out.type = Value::Type::TEXT;
       if (flags & 0x0080) out.text = "Cooling";
       else if (flags & 0x0040) out.text = "DHW / high temperature";
@@ -145,23 +148,24 @@ bool evaluate_derived(Derived which, const PassiveDecoder& d, Value& out) {
     case Derived::DHW_ACTIVE:
     case Derived::COOLING_ACTIVE: {
       uint32_t flags;
-      if (!flags_read(d, flags)) return false;
+      if (!flags_read(d, flags, now_ms, max_age_ms)) return false;
       const uint32_t mask = which == Derived::HEATING_ACTIVE ? 0x0020
                             : which == Derived::DHW_ACTIVE   ? 0x0040
                                                              : 0x0080;
       const bool context = (flags & mask) != 0;
       int32_t state;
-      const bool running = raw_value(d, SLAVE_OUTDOOR, Space::READ, 0x0014, state) && (state & 0x01);
+      const bool running = raw_value(d, SLAVE_OUTDOOR, Space::READ, 0x0014, state, now_ms, max_age_ms) &&
+                           (state & 0x01);
       out.type = Value::Type::BOOL;
       out.b = context && running &&
-              truthy(d, SLAVE_OUTDOOR, Space::WRITE, 0x0007) &&
-              truthy(d, SLAVE_OUTDOOR, Space::WRITE, 0x0008);
+              truthy(d, SLAVE_OUTDOOR, Space::WRITE, 0x0007, now_ms, max_age_ms) &&
+              truthy(d, SLAVE_OUTDOOR, Space::WRITE, 0x0008, now_ms, max_age_ms);
       return true;
     }
     case Derived::SG_MODE: {
       int32_t a, b;
-      if (!raw_value(d, SLAVE_CONTROLLER, Space::READ, 0xA7FD, a)) return false;
-      if (!raw_value(d, SLAVE_CONTROLLER, Space::READ, 0xA803, b)) return false;
+      if (!raw_value(d, SLAVE_CONTROLLER, Space::READ, 0xA7FD, a, now_ms, max_age_ms)) return false;
+      if (!raw_value(d, SLAVE_CONTROLLER, Space::READ, 0xA803, b, now_ms, max_age_ms)) return false;
       out.type = Value::Type::TEXT;
       if (a == -1000 && b == 224) out.text = "Normal (0-0)";
       else if (a == -1000 && b == 232) out.text = "Blocked (1-0)";
@@ -172,7 +176,7 @@ bool evaluate_derived(Derived which, const PassiveDecoder& d, Value& out) {
     }
     case Derived::CONTROLLER_CONTEXT: {
       int32_t a80c;
-      if (!raw_value(d, SLAVE_CONTROLLER, Space::WRITE, 0xA80C, a80c)) return false;
+      if (!raw_value(d, SLAVE_CONTROLLER, Space::WRITE, 0xA80C, a80c, now_ms, max_age_ms)) return false;
       const bool active = (a80c & 0x0040) != 0;
       const bool valve = (a80c & 0x0001) != 0;
       out.type = Value::Type::TEXT;
@@ -335,19 +339,32 @@ void PassiveDecoder::store(uint8_t slave, Space space, uint16_t start, const uin
   }
 }
 
-bool PassiveDecoder::get(uint8_t slave, Space space, uint16_t addr, int32_t& out) const {
+bool PassiveDecoder::get(uint8_t slave, Space space, uint16_t addr, int32_t& out, uint32_t now_ms,
+                         uint32_t max_age_ms) const {
   const auto it = registers_.find(register_key(slave, space, addr));
   if (it == registers_.end()) return false;
+  if (max_age_ms > 0 && static_cast<uint32_t>(now_ms - it->second.t_ms) > max_age_ms) return false;
   out = it->second.value;
   return true;
 }
 
-bool evaluate(const FieldSpec& f, const PassiveDecoder& d, Value& out) {
+bool PassiveDecoder::oldest_reading_age_ms(uint32_t now_ms, uint32_t& age_ms) const {
+  if (registers_.empty()) return false;
+  age_ms = 0;
+  for (const auto& item : registers_) {
+    const uint32_t age = static_cast<uint32_t>(now_ms - item.second.t_ms);
+    if (age > age_ms) age_ms = age;
+  }
+  return true;
+}
+
+bool evaluate(const FieldSpec& f, const PassiveDecoder& d, Value& out, uint32_t now_ms,
+              uint32_t max_age_ms) {
   out = Value{};
   int32_t raw = 0;
   switch (f.kind) {
     case Kind::NUM: {
-      if (!d.get(f.slave, f.space, f.addr, raw)) return false;
+      if (!d.get(f.slave, f.space, f.addr, raw, now_ms, max_age_ms)) return false;
       if (f.has_sentinel && raw == f.sentinel) return false;
       if (f.is_unsigned) raw &= 0xFFFF;
       const float v = static_cast<float>(raw) / f.div;
@@ -357,28 +374,28 @@ bool evaluate(const FieldSpec& f, const PassiveDecoder& d, Value& out) {
       return true;
     }
     case Kind::BIT:
-      if (!d.get(f.slave, f.space, f.addr, raw)) return false;
+      if (!d.get(f.slave, f.space, f.addr, raw, now_ms, max_age_ms)) return false;
       out.type = Value::Type::BOOL;
       out.b = (raw & f.mask) != 0;
       return true;
     case Kind::NONZERO:
-      if (!d.get(f.slave, f.space, f.addr, raw)) return false;
+      if (!d.get(f.slave, f.space, f.addr, raw, now_ms, max_age_ms)) return false;
       out.type = Value::Type::BOOL;
       out.b = raw != 0;
       return true;
     case Kind::SWITCH:
-      if (!d.get(f.slave, f.space, f.addr, raw)) return false;
+      if (!d.get(f.slave, f.space, f.addr, raw, now_ms, max_age_ms)) return false;
       if (raw != 0 && raw != 1) return false;
       out.type = Value::Type::BOOL;
       out.b = raw == 1;
       return true;
     case Kind::EQ:
-      if (!d.get(f.slave, f.space, f.addr, raw)) return false;
+      if (!d.get(f.slave, f.space, f.addr, raw, now_ms, max_age_ms)) return false;
       out.type = Value::Type::BOOL;
       out.b = raw == f.eq;
       return true;
     case Kind::ENUM: {
-      if (!d.get(f.slave, f.space, f.addr, raw)) return false;
+      if (!d.get(f.slave, f.space, f.addr, raw, now_ms, max_age_ms)) return false;
       const int32_t key = raw & 0xFFFF;
       out.type = Value::Type::TEXT;
       out.text = f.enum_default;
@@ -391,7 +408,7 @@ bool evaluate(const FieldSpec& f, const PassiveDecoder& d, Value& out) {
       return true;
     }
     case Kind::DERIVED:
-      return evaluate_derived(f.derived, d, out);
+      return evaluate_derived(f.derived, d, out, now_ms, max_age_ms);
   }
   return false;
 }
@@ -475,7 +492,7 @@ bool RoomEmulator::on_poll(uint32_t now_ms, Bytes& out) {
   if (setpoint_request > 0) {
     req = setpoint_request;
     ++setpoint_retries;
-    if (setpoint_retries > MAX_SETPOINT_RETRIES) {  // repo: not acknowledged after 5 cycles
+    if (setpoint_retries >= MAX_SETPOINT_RETRIES) {  // exactly five polls carry the requested setpoint
       setpoint_request = 0;
       setpoint_retries = 0;
     }
@@ -610,7 +627,7 @@ size_t Engine::feed(const uint8_t* data, size_t len, uint32_t now_us, uint32_t n
     ++handled;
     handle(frame, now_us, now_ms);
   }
-  sync_bus();
+  sync_bus(now_ms);
   return handled;
 }
 
@@ -638,10 +655,19 @@ void Engine::schedule(const Bytes& frame, uint32_t pre_us, uint32_t now_us) {
   if (!tx.request(frame, now_us + TX_SILENCE_US + pre_us)) ++tx_dropped;
 }
 
-void Engine::sync_bus() {
+void Engine::sync_bus(uint32_t now_ms) {
   int32_t value = 0;
-  if (decoder.get(SLAVE_ROOM, Space::WRITE, 0xB3C5, value)) room.on_bus_setpoint(value);
-  if (decoder.get(SLAVE_ROOM, Space::WRITE, 0xB3C6, value)) room.on_bus_topup(value);
+  if (decoder.get(SLAVE_ROOM, Space::WRITE, 0xB3C5, value, now_ms, max_register_age_ms)) {
+    room.on_bus_setpoint(value);
+  } else {
+    // Do not let an expired cached bus setpoint suppress a new request.
+    room.on_bus_setpoint(-1);
+  }
+  if (decoder.get(SLAVE_ROOM, Space::WRITE, 0xB3C6, value, now_ms, max_register_age_ms)) {
+    room.on_bus_topup(value);
+  } else {
+    room.on_bus_topup(0);
+  }
 }
 
 }  // namespace thermia_core

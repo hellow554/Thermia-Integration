@@ -4,12 +4,12 @@ import esphome.config_validation as cv
 from esphome.components import binary_sensor
 
 from . import ThermiaBus  # noqa: F401
-from .catalogue import FIELDS
+from .catalogue import DIAG_SENSORS, FIELDS
 
 CONF_KEY = "key"
 CONF_THERMIA_BUS_ID = "thermia_bus_id"
 
-KEYS = [f.key for f in FIELDS if f.kind == "binary"]
+KEYS = [f.key for f in FIELDS if f.kind == "binary"] + [k for k, kind, *_ in DIAG_SENSORS if kind == "binary"]
 
 CONFIG_SCHEMA = binary_sensor.binary_sensor_schema().extend(
     {

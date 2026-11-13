@@ -11,8 +11,10 @@ Dieses Repository ist eine ESPHome-Komponente für die Thermia iTec Eco (über R
 
 - **Quelle der Wahrheit:** Das Repo `ryckema/Thermia_itec` (Ordner `Write (Beta)/iTec Eco`). Adressen, Skalierung,
   Zeiten und Abläufe kommen von dort. Erfinde kein Protokollverhalten. Wenn etwas unklar ist, markiere es als offen und frage nach.
-- **Keine Sendung ohne Freigabe:** Änderungen am Sendepfad (`handle_tx`, `TxScheduler`, Emulationen) nur, wenn der Nutzer
-  den Prüfstand-Schritt bestätigt hat. Bei Zweifeln nicht senden.
+- **Prüfstand vor Hardwarebetrieb:** Der Nutzer hat ausdrücklich freigegeben, die Software- und Sendepfadänderungen
+  bereits vor Prüfstand-Schritt 1 vorzubereiten. Das ist keine Bestätigung, dass Schritt 1 bestanden ist. Bis zur
+  Messung darf nicht behauptet werden, dass das Board elektrisch sicher ist oder an die Wärmepumpe angeschlossen
+  werden kann. GPIO21s Boot-Verhalten nicht verändern.
 - **Boot-Zustand:** Den Pin GPIO21 (DE) nicht so verändern, dass er beim Start höher liegt als vorher. Siehe SAFETY.md, Abschnitt 1.
 - **Pumpe:** Das Relais (GPIO47) bleibt nach jedem Neustart AUS. Keine Automation, die die Pumpe ohne Nutzerbefehl einschaltet.
 - **Register nur im Katalog:** `components/thermia_bus/catalogue.py` ist die einzige Quelle. Danach
@@ -30,3 +32,5 @@ Python-Dateien in `components/thermia_bus` validieren nur die YAML-Konfiguration
 - Neues Feld: Eintrag in `catalogue.py` mit Quelle, dann `tools/gen.py`, dann Test in `tests/test_core.cpp`.
 - Neuer Diagnosewert: `DIAG_SENSORS` in `catalogue.py` und `diag_id`/`diag_value` in `thermia_bus.cpp`.
 - Neue Entität in YAML: nur in `config/` ergänzen, keine Generatorausgabe editieren.
+- Emulationsoptionen werden als Komponentenkonfiguration in `thermia_bus:` gesetzt, nicht über wiederherstellbare
+  Template-Schalter. Die Raumtemperaturquelle ist eine ESPHome-Sensor-ID (üblicherweise `platform: homeassistant`).

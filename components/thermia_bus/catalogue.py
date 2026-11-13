@@ -300,6 +300,9 @@ DIAG_SENSORS = (
     ("ack_emulation_status", "text", "0x0F ACK-Emulation Status", "0x0F ACK emulation status", True),
     ("room_responses_sent", "sensor", "Raum-Antworten gesendet", "Room responses sent", True),
     ("ack_frames_sent", "sensor", "ACK-Telegramme gesendet", "ACK frames sent", True),
+    ("tx_dropped", "sensor", "Verworfene Sendeaufträge", "Dropped TX requests", True),
+    ("oldest_register_age_seconds", "sensor", "Alter des ältesten Registerwerts", "Oldest register value age", True, "s"),
+    ("register_data_stale", "binary", "Registerdaten veraltet", "Register data stale", True),
 )
 
 

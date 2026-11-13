@@ -11,9 +11,12 @@ esphome:
   name: ${name}
   friendly_name: ${friendly_name}
   on_boot:
-    priority: 800   # very early: make sure the pump relay is OFF before anything else runs
-    then:
-      - switch.turn_off: pump
+    - priority: 800   # very early: make sure the pump relay is OFF before anything else runs
+      then:
+        - switch.turn_off: pump
+    - priority: -100  # after restored number state is available
+      then:
+        - lambda: 'id(thermia).set_watchdog_minutes(id(watchdog_minutes).state);'
 
 external_components:
   - source:
@@ -71,6 +74,19 @@ thermia_bus:
     mode: output
     inverted: false
 
+  # Emulate the DCM online module (slave 0x0F) ACK/replies only when explicitly enabled.
+  dcm:
+    "0x0f_emulation": true
+
+  # If `enable` is omitted, a configured sensor ID enables the room thermostat automatically.
+  # `enable: false` overrides the sensor reference and disables all 0x0A emulation.
+  room_temperature:
+    # Optional: true erzwingt Aktivierung, false deaktiviert sie. Ohne Angabe zählt die Sensorreferenz.
+    room_temperature_sensor: room_temperature_source
+
+  # 0 = keep cached register values indefinitely; e.g. 300 invalidates values older than 5 min.
+  register_stale_after: 0
+
 switch:
   # Umwälzpumpe: 230 V AC, max. 3 A, via the relay (10 A contacts). Always OFF after a reboot.
   - platform: gpio
@@ -81,30 +97,6 @@ switch:
       mode: output
     restore_mode: ALWAYS_OFF
     icon: mdi:pump
-
-  # Room sensor emulation (0x0A): OFF after boot, as in the repo.
-  - platform: template
-    id: room_emulation
-    name: "Raumsensor-Emulation"
-    icon: mdi:thermometer-check
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-    turn_on_action:
-      - lambda: 'id(thermia).set_room_enabled(true);'
-    turn_off_action:
-      - lambda: 'id(thermia).set_room_enabled(false);'
-
-  # 0x0F Online/DCM ACK emulation: ON by default, as in the repo.
-  - platform: template
-    id: ack_emulation
-    name: "0x0F ACK-Emulation"
-    icon: mdi:check-network-outline
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_ON
-    turn_on_action:
-      - lambda: 'id(thermia).set_ack_enabled(true);'
-    turn_off_action:
-      - lambda: 'id(thermia).set_ack_enabled(false);'
 
 button:
   - platform: template
@@ -133,8 +125,6 @@ sensor:
     id: room_temperature_source
     name: "Raumtemperatur Quelle"
     entity_id: sensor.raumtemperatur_quelle
-    on_value:
-      - lambda: 'id(thermia).room_set_temperature(x);'
 
 packages:
   thermia: !include entities/thermia_entities.yaml

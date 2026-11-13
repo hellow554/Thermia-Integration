@@ -10,8 +10,8 @@ Warmwasser-Nachheizung, ein 0x0F-ACK und eine Umwälzpumpe bereitstellt. Ersetzt
 
 - Alle Werte der Repo-Konfiguration für die Eco, aufgeteilt nach Modbus-Slave (Regler 0x02, Zubehör 0x06, Raumregler 0x0A,
   DCM 0x0F, Außeneinheit 0x1E). Vollständige Liste in `docs/REGISTERS.md`.
-- Raumsensor-Emulation (0x0A) mit Watchdog und Sollwert-Anforderung.
-- 0x0F ACK-Emulation mit 0x0708-Antwort.
+- Konfigurierbare Raumsensor-Emulation (0x0A) mit Watchdog und Sollwert-Anforderung.
+- Konfigurierbare 0x0F ACK-Emulation mit 0x0708-Antwort.
 - Raumthermostat (climate), Warmwasser-Nachheizung (button), Umwälzpumpe (switch, Relais GPIO47).
 
 ## Hardware
@@ -35,12 +35,50 @@ Verdrahtung: RJ45 Pin 1 oder 2 → A, Pin 3 oder 4 → B, Pin 5 oder 6 → GND. 
 
 Danach den Prüfstand in `docs/BENCH_TEST.md` durchgehen, bevor das Board an den Bus kommt.
 
+## Emulation konfigurieren
+
+Die Optionen stehen direkt unter `thermia_bus:`. Beispiel:
+
+```yaml
+thermia_bus:
+  id: thermia
+  uart_id: thermia_uart
+  de_pin: GPIO21
+  dcm:
+    "0x0f_emulation": true
+  room_temperature:
+    # enable ist optional: Sensorreferenz vorhanden => automatisch aktiv.
+    # enable: true
+    room_temperature_sensor: room_temperature_source
+    # enable: false  # optionaler Override: deaktiviert die Emulation trotz Sensorreferenz
+  register_stale_after: 0  # Sekunden; 0 deaktiviert automatische Invalidierung
+
+sensor:
+  - platform: homeassistant
+    id: room_temperature_source
+    entity_id: sensor.wohnzimmer_temperatur
+```
+
+`room_temperature.room_temperature_sensor` ist eine ESPHome-Sensor-ID, keine Home-Assistant-Entity-ID.
+Die HA-Entity wird im separaten `platform: homeassistant`-Sensor ausgewählt. Wird `enable` weggelassen, aktiviert
+sich die Raumemulation automatisch bei vorhandener, gültiger Sensorreferenz. `enable: false` schaltet sie explizit
+aus; `enable: true` ohne Sensor wird bereits bei der YAML-Validierung abgelehnt. Die Emulation ist nach dem Start
+logisch aktiv, sendet aber erst nach Empfang eines gültigen Temperaturwerts. Ohne Sensorreferenz und ohne
+explizites `enable: true` findet keine Raumthermostat-Emulation statt.
+
+`dcm.0x0f_emulation` ist standardmäßig `false` und muss explizit auf `true` gesetzt werden. `register_stale_after`
+ist optional: Ein positiver Wert invalidiert einzelne Registerdaten nach der angegebenen Zahl Sekunden. Der
+Diagnosewert `oldest_register_age_seconds` zeigt das Alter des ältesten gespeicherten Werts; der Binärsensor
+`register_data_stale` meldet veraltete Daten (bei `register_stale_after: 0` ist er unavailable). `tx_dropped` zählt
+Sendeaufträge, die der Scheduler wegen eines bereits laufenden Auftrags nicht übernehmen konnte.
+
 ## Dokumentation
 
 - `docs/SAFETY.md`: Sicherheit, Boot-Zustand des Enable-Pins, Pumpe, Netzspannung
 - `docs/BENCH_TEST.md`: Prüfstand in Schritten mit Abbruchkriterien
 - `docs/DECISIONS.md`: alle Entscheidungen mit Quelle
 - `docs/PLAN_ESPHOME_2026_10.md`: Plan und Stand
+- `docs/TODO.md`: offene Firmware-, Timing- und Prüfstandaufgaben
 - `docs/REGISTERS.md`: alle Register (erzeugt)
 - `AGENTS.md`: Regeln für Mitarbeit und KI-Agenten
 

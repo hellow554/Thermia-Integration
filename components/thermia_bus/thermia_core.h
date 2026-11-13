@@ -109,7 +109,9 @@ struct Reading {
 class PassiveDecoder {
  public:
   void handle(const Bytes& frame, uint32_t now_ms);
-  bool get(uint8_t slave, Space space, uint16_t addr, int32_t& out) const;
+  bool get(uint8_t slave, Space space, uint16_t addr, int32_t& out, uint32_t now_ms = 0,
+           uint32_t max_age_ms = 0) const;
+  bool oldest_reading_age_ms(uint32_t now_ms, uint32_t& age_ms) const;
   uint32_t unmatched_responses = 0;
 
  private:
@@ -120,7 +122,8 @@ class PassiveDecoder {
 };
 
 // Evaluates one catalogue field. Returns false if there is no valid value.
-bool evaluate(const FieldSpec& field, const PassiveDecoder& decoder, Value& out);
+bool evaluate(const FieldSpec& field, const PassiveDecoder& decoder, Value& out, uint32_t now_ms = 0,
+              uint32_t max_age_ms = 0);
 
 // --- Frame recognition -----------------------------------------------------
 bool is_room_poll(const Bytes& frame);
@@ -209,6 +212,7 @@ class Engine {
   AckEmulator ack;
   TxScheduler tx;
   uint32_t tx_dropped = 0;
+  uint32_t max_register_age_ms = 0;  // 0 keeps cached values indefinitely
 
   // Feeds received bytes. now_us: time of reception (microseconds), now_ms: millisecond clock.
   size_t feed(const uint8_t* data, size_t len, uint32_t now_us, uint32_t now_ms);
@@ -216,7 +220,7 @@ class Engine {
  private:
   void handle(const Bytes& frame, uint32_t now_us, uint32_t now_ms);
   void schedule(const Bytes& frame, uint32_t pre_us, uint32_t now_us);
-  void sync_bus();
+  void sync_bus(uint32_t now_ms);
 };
 
 }  // namespace thermia_core

@@ -4,7 +4,7 @@ Automatisch erzeugt aus `components/thermia_bus/catalogue.py` (`python3 tools/ge
 
 Quelle der Adressen und Abläufe: ryckema/Thermia_itec, Ordner `Write (Beta)/iTec Eco`.
 
-Zusätzlich gibt es Diagnose- und Emulationswerte ohne Register: `bus_status`, `frames_ok`, `resync_bytes`, `unmatched_responses`, `room_emulation_status`, `ack_emulation_status`, `room_responses_sent`, `ack_frames_sent`.
+Zusätzlich gibt es Diagnose- und Emulationswerte ohne Register: `bus_status`, `frames_ok`, `resync_bytes`, `unmatched_responses`, `room_emulation_status`, `ack_emulation_status`, `room_responses_sent`, `ack_frames_sent`, `tx_dropped`, `oldest_register_age_seconds`, `register_data_stale`.
 
 | Gerät | Name (DE) | Quelle auf dem Bus | Art | Standard |
 |---|---|---|---|---|

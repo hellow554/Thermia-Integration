@@ -23,8 +23,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install ESPHome 2026.10.1
-        run: pip install "esphome==2026.10.1"
+      - name: Install ESPHome 2026.10.2
+        run: pip install "esphome==2026.10.2"
       - name: Create secrets with a random API key (compile only, never shipped)
         run: |
           KEY="$(openssl rand -base64 32)"

@@ -9,7 +9,7 @@
 ## Firmware / ESPHome
 
 - [ ] Expliziten `dry_run`-Modus ergänzen: Protokollentscheidungen und Scheduler ausführen, aber DE nicht aktivieren und keine Bytes auf UART senden.
-- [ ] ESPHome 2026.10.1 installieren und `esphome compile config/thermia-relay.yaml` erfolgreich durchlaufen lassen.
+- [ ] ESPHome 2026.10.2 installieren und `esphome compile config/thermia-relay.yaml` erfolgreich durchlaufen lassen.
 - [ ] Prüfen, dass `room_temperature.enable` ohne Sensor automatisch deaktiviert ist, mit Sensor automatisch aktiviert wird, `false` überschreibt und `true` ohne Sensor einen Validierungsfehler liefert.
 - [ ] Prüfen, dass der HA-Sensorwert beim Start und bei Updates in den Raumemulator übernommen wird; `WAITING` bis zum ersten gültigen Wert.
 - [ ] Watchdog mit einem über längere Zeit unveränderten HA-Sensorwert testen: HA-State-Callbacks kommen bei Zustandsänderungen; prüfen, ob die Quellintegration ausreichend häufig aktualisiert und ob bei Bedarf ein anderer Watchdog-Wert (einschließlich `0` = deaktiviert) sinnvoll ist.
@@ -33,3 +33,10 @@
 - [ ] 0x0F ACK nur bei `dcm.0x0f_emulation: true`.
 - [ ] Raumemulation nur bei gültiger Sensorreferenz und effektiver Aktivierung; nach Watchdog-Timeout keine Raumantwort. `room_temperature.enable` muss optional bleiben: ohne Sensorreferenz AUS, mit gültiger Referenz EIN, `false` überschreibt, `true` ohne Referenz ist ein Konfigurationsfehler.
 - [ ] Pumpe bleibt nach jedem Neustart AUS (GPIO47); keine Änderung an diesem Verhalten.
+
+
+## Home Assistant wizard / onboarding
+
+- [ ] Verify the linked Home Assistant sensor receives the wizard-selected `entity_id` after initial pairing and after ESPHome reboot.
+- [ ] Verify room emulation remains waiting (no response) until the wizard selection reconnects and a fresh valid temperature arrives.
+- [ ] Verify setup wizard filtering presents only temperature sensors in Home Assistant 2026.11.

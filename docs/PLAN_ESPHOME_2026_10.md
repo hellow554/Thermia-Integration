@@ -1,6 +1,6 @@
 # Plan: ESPHome 2026.10 mit eigener Komponente
 
-Ziel-Version: ESPHome 2026.10.1 (im CI fest gepinnt).
+Ziel-Version: ESPHome 2026.10.2 (im CI fest gepinnt).
 
 ## Stand
 
@@ -34,13 +34,13 @@ Ziel-Version: ESPHome 2026.10.1 (im CI fest gepinnt).
 ## Bekannte Grenzen
 
 - `flush()` blockiert, bis das Telegramm gesendet ist. Das ist im Repo genauso. Eine Abfrage-Antwort dauert damit ca. 12 ms.
-- Die ESPHome-Glue-Schicht muss mit ESPHome 2026.10.1 kompiliert werden; der Host-Build deckt sie nicht ab.
+- Die ESPHome-Glue-Schicht muss mit ESPHome 2026.10.2 kompiliert werden; der Host-Build deckt sie nicht ab.
 - UART-/TX-Timing und GPIO21-Bootpegel müssen auf Hardware gemessen werden.
 - `register_stale_after: 0` lässt den Cache unbegrenzt gültig; ein sinnvoller positiver Wert ist erst nach Messung der Register-Pollintervalle festzulegen.
 
 ## Nächste Schritte
 
-1. ESPHome 2026.10.1 installieren und Firmware kompilieren.
+1. ESPHome 2026.10.2 installieren und Firmware kompilieren.
 2. Dry-Run-Schalter implementieren.
 3. Vor dem Anschluss GPIO21 / RS485_EN im Boot- und Resetverhalten messen (siehe `docs/SAFETY.md`).
 4. UART-/TX-Timing, Peer-Erkennung, Watchdog, Diagnosewerte und übrige Funktionsfälle gemäß `docs/TODO.md` prüfen.

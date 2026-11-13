@@ -20,8 +20,10 @@ esphome:
 
 external_components:
   - source:
-      type: local
-      path: ../components   # the Thermia protocol component lives in components/thermia_bus
+      type: git
+      url: https://github.com/hellow554/Thermia-Integration
+      ref: esp32
+    components: [thermia_bus]
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -78,10 +80,8 @@ thermia_bus:
   dcm:
     "0x0f_emulation": true
 
-  # If `enable` is omitted, a configured sensor ID enables the room thermostat automatically.
-  # `enable: false` overrides the sensor reference and disables all 0x0A emulation.
+  # The HA sensor entity is selected in the Home Assistant 2026.11 setup wizard.
   room_temperature:
-    # Optional: true erzwingt Aktivierung, false deaktiviert sie. Ohne Angabe zählt die Sensorreferenz.
     room_temperature_sensor: room_temperature_source
 
   # 0 = keep cached register values indefinitely; e.g. 300 invalidates values older than 5 min.
@@ -119,13 +119,13 @@ number:
     set_action:
       - lambda: 'id(thermia).set_watchdog_minutes(x);'
 
-sensor:
-  # Raumtemperatur kommt aus Home Assistant. Jeder neue Wert setzt den Watchdog zurück.
-  - platform: homeassistant
-    id: room_temperature_source
-    name: "Raumtemperatur Quelle"
-    entity_id: sensor.raumtemperatur_quelle
-
 packages:
-  thermia: !include entities/thermia_entities.yaml
-  climate: !include entities/climate.yaml
+  thermia_entities:
+    url: https://github.com/hellow554/Thermia-Integration
+    ref: esp32
+    refresh: 1d
+    path: config
+    files:
+      - entities/thermia_entities.yaml
+      - entities/climate.yaml
+      - packages/home_assistant_wizard.yaml

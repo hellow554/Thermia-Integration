@@ -68,4 +68,4 @@ als vermeintlichen Dry-Run an einen laufenden Thermia-Bus anschließen. Die Impl
 ## Vor dem ersten Hardwaretest
 
 Die offenen Timing- und Firmwareaufgaben sind in `docs/TODO.md` gesammelt. Insbesondere muss die ESPHome-Kompilierung
-mit 2026.10.1 erfolgreich sein; die reine Host-Test-Suite ersetzt keinen Firmware-Build.
+mit 2026.10.2 erfolgreich sein; die reine Host-Test-Suite ersetzt keinen Firmware-Build.

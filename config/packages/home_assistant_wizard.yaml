@@ -1,0 +1,25 @@
+# Home Assistant 2026.11+ setup wizard.
+# The climate entity is shown on the first page; the HA temperature source is
+# selected on the second page and linked to the Home Assistant sensor below.
+api:
+  wizard:
+    pages:
+      - title: Thermia
+        entities:
+          - id: room_thermostat
+            description: Thermia room thermostat exposed by this ESPHome device.
+
+      - title: Quellen
+        inputs:
+          - entity: room_temperature_source
+            description: Raumtemperatursensor für die Thermia-Raumthermostat-Emulation auswählen.
+            target:
+              entity:
+                - domain: sensor
+                  device_class: temperature
+
+# No entity_id here: Home Assistant assigns the selected entity through the
+# linked API wizard input whenever it connects.
+sensor:
+  - platform: homeassistant
+    id: room_temperature_source

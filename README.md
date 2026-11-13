@@ -30,7 +30,7 @@ Verdrahtung: RJ45 Pin 1 oder 2 → A, Pin 3 oder 4 → B, Pin 5 oder 6 → GND. 
     python3 tools/gen.py                      # erzeugt Register-Header, Doku und Entitäten
     bash tests/run_tests.sh                   # C++-Host-Tests
     cp config/secrets.yaml.example config/secrets.yaml   # ausfüllen, api_key mit: openssl rand -base64 32
-    esphome compile config/thermia-relay.yaml  # ESPHome 2026.10.1
+    esphome compile config/thermia-relay.yaml  # ESPHome 2026.10.2
     esphome run config/thermia-relay.yaml      # erstes Flashen per USB
 
 Danach den Prüfstand in `docs/BENCH_TEST.md` durchgehen, bevor das Board an den Bus kommt.
@@ -86,3 +86,21 @@ Sendeaufträge, die der Scheduler wegen eines bereits laufenden Auftrags nicht �
 
 MIT, siehe `LICENSE`. Register, Zeiten und Abläufe stammen aus [ryckema/Thermia_itec](https://github.com/ryckema/Thermia_itec)
 (MIT). Die Protokollforschung von Piotr Romanowski ist dort ebenfalls genannt. Details in `NOTICE.md`.
+
+
+## Home Assistant 2026.11 setup wizard
+
+The optional room-temperature source is selected when adding the ESPHome device in
+Home Assistant 2026.11 or newer. The remote package
+`config/packages/home_assistant_wizard.yaml` declares a linked
+`platform: homeassistant` sensor without a fixed `entity_id`, and the API wizard
+asks the user to select a Home Assistant temperature sensor. Keep the
+`room_temperature.room_temperature_sensor` reference in `thermia_bus:` pointing
+to that ESPHome sensor ID (`room_temperature_source`).
+
+The wizard selection is stored by Home Assistant and sent to the ESP32 whenever
+the API connects; it is not persisted on the ESP32. After a reboot, room
+emulation remains configured/enabled, but it will not send a room-temperature
+reply until Home Assistant reconnects, supplies the selected entity ID, and a
+valid fresh temperature state arrives. If the wizard input is not selected,
+the emulation safely waits for a source.

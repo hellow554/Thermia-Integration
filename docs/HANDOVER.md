@@ -21,7 +21,7 @@ Für weitere Entwickler und KI-Agenten. Vor dem Arbeiten `AGENTS.md` lesen.
 
 ## Noch offen
 
-- ESPHome-Kompilierung mit genau 2026.10.1 ausführen (CI-Job vorhanden; in der vorherigen Arbeitsumgebung nicht lokal installiert).
+- ESPHome-Kompilierung mit genau 2026.10.2 ausführen (CI-Job vorhanden; in der vorherigen Arbeitsumgebung nicht lokal installiert).
 - `docs/BENCH_TEST.md` und `docs/TODO.md`: Boot-Pegel / DE-Transceiverzustand, UART-/TX-Timing und Verhalten am realen Bus prüfen.
 - Dry-Run-Schalter für den Prüfstand fertigstellen; bis dahin ist Schritt 3 ausdrücklich nicht ausführbar.
 - Erst nach den elektrischen Prüfungen tatsächlichen Anschluss an die Wärmepumpe vornehmen.
@@ -31,3 +31,15 @@ Für weitere Entwickler und KI-Agenten. Vor dem Arbeiten `AGENTS.md` lesen.
 - Register nur über `catalogue.py` ändern, dann `python3 tools/gen.py` und `bash tests/run_tests.sh`.
 - Keine Zahl ohne Quelle im Repo. Die Quelle gehört in die Kommentarzeile des Feldes.
 - Softwareänderungen am Sendepfad sind für diesen Stand vom Nutzer vor der Hardwareprüfung freigegeben. Daraus folgt keine Freigabe, das Board vor Abschluss der offenen Sicherheitsmessung anzuschließen.
+
+
+## Home Assistant 2026.11 wizard
+
+`config/packages/home_assistant_wizard.yaml` defines the linked HA sensor
+`room_temperature_source` and the API setup wizard. The sensor intentionally has
+no `entity_id`: Home Assistant 2026.11+ writes the selected entity ID through
+the wizard. The `thermia_bus.room_temperature.room_temperature_sensor` option
+still references the ESPHome sensor ID. This is required because the component
+subscribes to the sensor's state callback. The selected HA entity is not stored
+on the ESP32; after restart, replies wait until the API reconnects and a fresh
+state arrives.

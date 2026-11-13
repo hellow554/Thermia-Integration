@@ -7,7 +7,7 @@ Jede Entscheidung nennt die Quelle. Änderungen nur nach Rücksprache mit dem Nu
 | D1 | Repo `ryckema/Thermia_itec` ist die Quelle der Wahrheit für Adressen, Skalierung, Zeiten und Abläufe. | Nutzer |
 | D2 | Zielplattform ist ESPHome auf dem Waveshare ESP32-S3-Relay-1CH, Ersatz für die Python-Integration. | Nutzer |
 | D3 | Eigene Custom-Komponente (C++), keine Lambdas für Bus-Logik. | Nutzer |
-| D4 | Ziel-ESPHome-Version 2026.10 (aktuelles Patch-Release 2026.10.1). | Nutzer, ESPHome-Changelog |
+| D4 | Ziel-ESPHome-Version 2026.10 (aktuelles Patch-Release 2026.10.2). | Nutzer, ESPHome-Changelog |
 | D5 | Pins: TX GPIO17, RX GPIO18, Freigabe DE/RE GPIO21, Relais GPIO47. | Nutzer, Schaltplan |
 | D6 | Raumthermostat-Emulation 0x0A ist aktiv, wenn `room_temperature.room_temperature_sensor` konfiguriert ist und `enable` fehlt oder `true` ist. `enable: false` deaktiviert sie ausdrücklich. Sie ist damit bereits beim ESPHome-Start logisch aktiviert; senden kann sie erst nach einem gültigen, frischen Temperaturwert von Home Assistant. | Nutzer |
 | D7 | 0x0F ACK-/DCM-Emulation wird ausschließlich durch `dcm.0x0f_emulation: true` aktiviert. Fehlt der Wert, ist sie AUS. | Nutzer, explizite YAML-Option |
@@ -28,3 +28,5 @@ Jede Entscheidung nennt die Quelle. Änderungen nur nach Rücksprache mit dem Nu
 | D22 | `register_stale_after` wird in Sekunden angegeben. Standard `0` bedeutet keine automatische Invalidierung; ein positiver Wert macht Registerwerte nach Ablauf des Alters ungültig. Das Alter des ältesten gespeicherten Registerwerts wird separat diagnostisch bereitgestellt; auch interne Raumregler-Synchronisierung ignoriert abgelaufene Cachewerte. | Implementierungsentscheidung; Nutzerwunsch zur Veraltung |
 | D23 | Die Komponente veröffentlicht Sensor-, Binär-, Text- und Climate-Zustände nur bei tatsächlicher Änderung. Diagnosewerte mit laufendem Alterszähler dürfen sich weiterhin regelmäßig ändern. | Nutzerwunsch |
 | D24 | Prüfstand-Schritt 1 ist für die Softwarebearbeitung vorerst zurückgestellt. Die angenommene Pull-up-Logik 1 ist dokumentiert, gilt aber nicht als elektrische Sicherheitsprüfung; vor dem Anschluss ist die Messung weiterhin erforderlich. | Nutzer |
+
+| D25 | Room temperature HA entity selection is done through the ESPHome API wizard (HA 2026.11+). A linked `platform: homeassistant` sensor without fixed `entity_id` remains in YAML; the wizard populates it. The component continues to reference its ESPHome sensor ID. | Nutzer |
